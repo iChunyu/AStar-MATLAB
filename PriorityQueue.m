@@ -1,4 +1,5 @@
 % Priority queue realized by heap
+% Ref: https://algo.itcharge.cn/01.Array/02.Array-Sort/07.Array-Heap-Sort/
 
 % XiaoCY, 2024-10-22
 
@@ -24,13 +25,17 @@ classdef PriorityQueue < handle
         % add data to heap
         function push(obj, value, priority)
             obj.size = obj.size + 1;
-            obj.data = [obj.data; {value}, {priority}];
+            obj.data = [obj.data; {value}, priority];
             obj.shift_up(obj.size);
         end
 
         % get and remove data from heap
-        function value = pop(obj)
-            value = obj.data{1, 1};
+        function varargout = pop(obj)
+            if obj.size == 0
+                varargout = {[], []};
+                return
+            end
+            varargout = obj.data(1, :);
             obj.data(1, :) = obj.data(end, :);
             obj.data(end, :) = [];
             obj.size = obj.size - 1;
