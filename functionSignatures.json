@@ -1,0 +1,76 @@
+{
+    "Node.Node":
+    {
+        "inputs":
+        [
+            {"name": "row", "kind": "required"},
+            {"name": "col", "kind": "required"},
+            {"name": "cost", "kind": "ordered"},
+            {"name": "parent", "kind": "ordered"}
+        ]
+    },
+    "GridMap.GridMap":
+    {
+        "inputs":
+        [
+            {"name": "data", "kind": "required"},
+            {"name": "obstacle", "kind": "ordered"}
+        ]
+    },
+    "GridMap.neighbors":
+    {
+        "inputs":
+        [
+            {"name": "obj", "kind": "required"},
+            {"name": "Node", "kind": "required"}
+        ]
+    },
+    "GridMap.show":
+    {
+        "inputs":
+        [
+            {"name": "obj", "kind": "required"},
+            {"name": "GridWidth", "kind": "namevalue"},
+            {"name": "GridAlpha", "kind": "namevalue"},
+            {"name": "CostAlpha", "kind": "namevalue"},
+            {"name": "CostColor", "kind": "namevalue"},
+            {"name": "ObstacleAlpha", "kind": "namevalue"},
+            {"name": "ObstacleColor", "kind": "namevalue"},
+            {"name": "ShowPath", "kind": "namevalue"},
+            {"name": "PathWidth", "kind": "namevalue"},
+            {"name": "PathColor", "kind": "namevalue"},
+            {"name": "ShowValue", "kind": "namevalue"},
+            {"name": "FontSize", "kind": "namevalue"}
+        ]
+    },
+    "PriorityQueue.PriorityQueue":
+    {
+        "inputs":
+        [
+            {"name": "data", "kind": "ordered"}
+        ]
+    },
+    "PriorityQueue.push":
+    {
+        "inputs":
+        [
+            {"name": "obj", "kind": "required"},
+            {"name": "value", "kind": "required"},
+            {"name": "priority", "kind": "required"}
+        ]
+    },
+    "PriorityQueue.pop":
+    {
+        "inputs":
+        [
+            {"name": "obj", "kind": "required"}
+        ]
+    },
+    "PriorityQueue.clear":
+    {
+        "inputs":
+        [
+            {"name": "obj", "kind": "required"}
+        ]
+    }
+}

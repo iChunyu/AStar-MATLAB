@@ -7,7 +7,6 @@
 classdef GridMap < handle
     properties
         data = [];
-        path = [];
         obstacle = inf;
     end
 
@@ -17,12 +16,10 @@ classdef GridMap < handle
             p = inputParser;
             p.addRequired('data');
             p.addOptional('obstacle', inf);
-            p.addOptional('path', []);
             p.parse(varargin{:});
 
             obj.data = p.Results.data;
             obj.obstacle = p.Results.obstacle;
-            obj.path = p.Results.path;
         end
 
         % return neighbors and cost
@@ -75,7 +72,7 @@ classdef GridMap < handle
             p.addParameter('CostColor', [0.9804, 0.4980, 0.4353]);
             p.addParameter('ObstacleAlpha', 1);
             p.addParameter('ObstacleColor', [0.5098, 0.6902, 0.8235])
-            p.addParameter('ShowPath', true);
+            p.addParameter('ShowPath', []);
             p.addParameter('PathWidth', 5);
             p.addParameter('PathColor', [0.5569, 0.8118, 0.7882]);
             p.addParameter('ShowValue', false);
@@ -109,8 +106,9 @@ classdef GridMap < handle
             end
             axis('off', 'equal', 'ij')
 
-            if p.Results.ShowPath && ~isempty(obj.path)
-                plot(obj.path(:,2), obj.path(:,1), 'Color', p.Results.PathColor, 'LineWidth', p.Results.PathWidth);
+            if ~isempty(p.Results.ShowPath)
+                plot(p.Results.ShowPath(:,2), p.Results.ShowPath(:,1), ...
+                    'Color', p.Results.PathColor, 'LineWidth', p.Results.PathWidth);
             end
         end
     end
