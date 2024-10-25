@@ -9,8 +9,11 @@ close all
 load('map_data.mat')
 map = GridMap(map_data);
 
-start = Node(6, 4, 0, []);
+start = Node(6, 4);
 goal = Node(1, 10);
-path = AStarSolve(map, start, goal);
 
+path = SimpleAStar(map, start, goal);
 map.show('ShowPath', path)
+
+astar_solver = AStar(map, start, goal);
+map.show('ShowPath', astar_solver.path)

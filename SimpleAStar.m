@@ -4,7 +4,7 @@
 % XiaoCY, 2024-10-24
 
 %%
-function path = AStarSolve(map, start, goal)
+function path = SimpleAStar(map, start, goal)
     frontier = PriorityQueue;
     came_from = cell(size(map.data));       % {[row, col], cost_so_far} in each cell
     came_from{start.row, start.col} = {[], 0};
@@ -15,7 +15,7 @@ function path = AStarSolve(map, start, goal)
     while frontier.size > 0
         current = frontier.pop();
 
-        if current.row == goal.row && current.col == goal.col
+        if current == goal
             break
         end
 
