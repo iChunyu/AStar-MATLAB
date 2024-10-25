@@ -7,32 +7,31 @@
 function path = AStarSolve(map, start, goal)
     frontier = PriorityQueue;
     came_from = cell(size(map.data));       % {[row, col], cost_so_far} in each cell
-    came_from{start(1), start(2)} = {[], 0};
+    came_from{start.row, start.col} = {[], 0};
 
     frontier.push(start, 0);
-    heuristic = @(start, goal) sum(abs(goal - start));
+    heuristic = @(start, goal) abs(goal.row - start.row) + abs(goal.col - start.col);
 
     while frontier.size > 0
         current = frontier.pop();
 
-        if isequal(current, goal)
+        if current.row == goal.row && current.col == goal.col
             break
         end
 
-        [neighbors, costs] = map.neighbors(current);
+        neighbors = map.neighbors(current);
         for k = 1:length(neighbors)
-            new_cost = came_from{current(1), current(2)}{2} + costs(k) + 1;
-            if isempty(came_from{neighbors(k, 1), neighbors(k, 2)}) ...
-                    || new_cost < came_from{neighbors(k, 1), neighbors(k, 2)}{2}
-                came_from{neighbors(k, 1), neighbors(k, 2)} = {current, new_cost};
-                priority = new_cost + heuristic(current, goal);
-                frontier.push(neighbors(k, :), priority);
+            if isempty(came_from{neighbors(k).row, neighbors(k).col}) ...
+                    || neighbors(k).cost < came_from{neighbors(k).row, neighbors(k).col}{2}
+                came_from{neighbors(k).row, neighbors(k).col} = {[current.row, current.col], neighbors(k).cost};
+                priority = neighbors(k).cost + heuristic(current, goal);
+                frontier.push(neighbors(k), priority);
             end
         end
     end
 
-    path = goal;
-    index = came_from{goal(1), goal(2)}{1};
+    path = [goal.row, goal.col];
+    index = came_from{goal.row, goal.col}{1};
     while ~isempty(index)
         path = vertcat(path, index);
         index = came_from{index(1), index(2)}{1};

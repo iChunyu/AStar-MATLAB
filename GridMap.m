@@ -26,36 +26,43 @@ classdef GridMap < handle
         end
 
         % return neighbors and cost
-        function [index, cost] = neighbors(obj, loc)
-            index = [];
-            cost = [];
+        function neighbor_nodes = neighbors(obj, node)
+            neighbor_nodes = [];
             [Ny, Nx] = size(obj.data);
-            if loc(1) < 1 || loc(1) > Ny || loc(2) < 1 || loc(2) > Nx
+            if node.row < 1 || node.row > Ny || node.col < 1 || node.col > Nx
                 return
             end
 
             % up
-            if loc(1) - 1 >= 1
-                index = [index; loc(1)-1, loc(2)];
-                cost = [cost; obj.data(loc(1)-1, loc(2))];
+            row = node.row - 1;
+            col = node.col;
+            if row >= 1 && obj.data(row, col) < obj.obstacle
+                cost = node.cost + obj.data(row, col) + 1;      % +1 for movement cost
+                neighbor_nodes = [neighbor_nodes; Node(row, col, cost, node)];
             end
 
             % left
-            if loc(2) - 1 >= 1
-                index = [index; loc(1), loc(2)-1];
-                cost = [cost; obj.data(loc(1), loc(2)-1)];
+            row = node.row;
+            col = node.col-1;
+            if col >= 1 && obj.data(row, col) < obj.obstacle
+                cost = node.cost + obj.data(row, col) + 1;      % +1 for movement cost
+                neighbor_nodes = [neighbor_nodes; Node(row, col, cost, node)];
             end
 
             % down
-            if loc(1) + 1 <= Ny
-                index = [index; loc(1)+1, loc(2)];
-                cost = [cost; obj.data(loc(1)+1, loc(2))];
+            row = node.row + 1;
+            col = node.col;
+            if col <= Ny && obj.data(row, col) < obj.obstacle
+                cost = node.cost + obj.data(row, col) + 1;      % +1 for movement cost
+                neighbor_nodes = [neighbor_nodes; Node(row, col, cost, node)];
             end
 
             % right
-            if loc(2) + 1 <= Nx
-                index = [index; loc(1), loc(2)+1];
-                cost = [cost; obj.data(loc(1), loc(2)+1)];
+            row = node.row;
+            col = node.col + 1;
+            if col <= Nx && obj.data(row, col) < obj.obstacle
+                cost = node.cost + obj.data(row, col) + 1;      % +1 for movement cost
+                neighbor_nodes = [neighbor_nodes; Node(row, col, cost, node)];
             end
         end
 
