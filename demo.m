@@ -6,14 +6,16 @@
 clear;clc
 close all
 
-load('map_data.mat')
+map_data = randi([0 50], 5, 5);
 map = GridMap(map_data);
 
-start = Node(6, 4);
-goal = Node(1, 10);
+start = Node(1, 1);
+goal = Node(5, 5);
 
-path = SimpleAStar(map, start, goal);
-map.show('ShowPath', path)
+[path, cost] = SimpleAStar(map, start, goal);
+map.show('ShowPath', path, 'ShowValue', true)
+fprintf('SimpAStar total cost: %d\n', cost)
 
 astar_solver = AStar(map, start, goal);
-map.show('ShowPath', astar_solver.path)
+map.show('ShowPath', astar_solver.path, 'ShowValue', true)
+fprintf('AStar total cost: %d\n', astar_solver.goal.cost)

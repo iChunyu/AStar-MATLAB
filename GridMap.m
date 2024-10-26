@@ -49,7 +49,7 @@ classdef GridMap < handle
             % down
             row = node.row + 1;
             col = node.col;
-            if col <= Ny && obj.data(row, col) < obj.obstacle
+            if row <= Ny && obj.data(row, col) < obj.obstacle
                 cost = node.cost + obj.data(row, col) + 1;      % +1 for movement cost
                 neighbor_nodes = [neighbor_nodes; Node(row, col, cost, node)];
             end
@@ -81,6 +81,11 @@ classdef GridMap < handle
 
             idx = obj.data < obj.obstacle;
             cmax = max(obj.data(idx));
+            if cmax == 0
+                max_alpha = 1;
+            else
+                max_alpha = 1 / cmax;
+            end
             [Ny, Nx] = size(obj.data);
             xbase = [-0.5, 0.5, 0.5, -0.5];
             ybase = [-0.5, -0.5, 0.5, 0.5];
@@ -95,7 +100,7 @@ classdef GridMap < handle
                         patch(x+xbase, y+ybase, p.Results.ObstacleColor, 'FaceAlpha', p.Results.ObstacleAlpha, ...
                             'EdgeAlpha', p.Results.GridAlpha, 'LineWidth', p.Results.GridWidth);
                     else
-                        patch(x+xbase, y+ybase, p.Results.CostColor, 'FaceAlpha', obj.data(y, x)/cmax, ...
+                        patch(x+xbase, y+ybase, p.Results.CostColor, 'FaceAlpha', obj.data(y, x) * max_alpha, ...
                             'EdgeAlpha', p.Results.GridAlpha, 'LineWidth', p.Results.GridWidth);
                         if p.Results.ShowValue
                             text(x, y, num2str(obj.data(y, x)), 'FontSize', p.Results.FontSize, ...

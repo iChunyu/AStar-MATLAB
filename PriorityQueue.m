@@ -24,6 +24,16 @@ classdef PriorityQueue < handle
 
         % add data to heap
         function push(obj, value, priority)
+            % check duplication
+            for k = 1:obj.size
+                if value == obj.data{k, 1}
+                    if priority < obj.data{k, 2}
+                        obj.data(k, :) = {value, priority};
+                        obj.shift_up(k);
+                    end
+                    return
+                end
+            end
             obj.size = obj.size + 1;
             obj.data = [obj.data; {value}, priority];
             obj.shift_up(obj.size);

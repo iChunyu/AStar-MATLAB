@@ -4,13 +4,13 @@
 % XiaoCY, 2024-10-24
 
 %%
-function path = SimpleAStar(map, start, goal)
+function varargout = SimpleAStar(map, start, goal)
     frontier = PriorityQueue;
     came_from = cell(size(map.data));       % {[row, col], cost_so_far} in each cell
     came_from{start.row, start.col} = {[], 0};
 
     frontier.push(start, 0);
-    heuristic = @(start, goal) abs(goal.row - start.row) + abs(goal.col - start.col);
+    heuristic = @(node) abs(goal.row - node.row) + abs(goal.col - node.col);
 
     while frontier.size > 0
         current = frontier.pop();
@@ -24,7 +24,7 @@ function path = SimpleAStar(map, start, goal)
             if isempty(came_from{neighbors(k).row, neighbors(k).col}) ...
                     || neighbors(k).cost < came_from{neighbors(k).row, neighbors(k).col}{2}
                 came_from{neighbors(k).row, neighbors(k).col} = {[current.row, current.col], neighbors(k).cost};
-                priority = neighbors(k).cost + heuristic(current, goal);
+                priority = neighbors(k).cost + heuristic(current);
                 frontier.push(neighbors(k), priority);
             end
         end
@@ -36,4 +36,7 @@ function path = SimpleAStar(map, start, goal)
         path = vertcat(path, index);
         index = came_from{index(1), index(2)}{1};
     end
+
+    varargout{1} = path;
+    varargout{2} = came_from{goal.row, goal.col}{2};
 end
