@@ -9,6 +9,7 @@ classdef Node < handle
         col             % column index
         cost            % cost so far
         parent          % parent Node
+        depth           % steps from start to current node
     end
 
     methods
@@ -18,12 +19,18 @@ classdef Node < handle
             p.addRequired('col');
             p.addOptional('cost', 0);
             p.addOptional('parent', [], @(n) isa(n, 'Node'));
+            p.addOptional('depth', []);
             p.parse(varargin{:});
 
             obj.row = p.Results.row;
             obj.col = p.Results.col;
             obj.cost = p.Results.cost;
             obj.parent = p.Results.parent;
+            if isempty(p.Results.parent)
+                obj.depth = 1;
+            else
+                obj.depth = p.Results.parent.depth + 1;
+            end
         end
 
         % override `==` operator, only check row and column index
@@ -33,6 +40,13 @@ classdef Node < handle
             else
                 is_equal = false;
             end
+        end
+
+        % fake hash key
+        % Hint: MATLAB built-in `dictionary` and `containers.Map` are hash tables, 
+        %   but users only need to give a unique 'key'. Here I chose the matrix index.
+        function val = key(obj)
+            val = sprintf('(%d, %d)', obj.row, obj.col);
         end
     end
 end

@@ -10,31 +10,23 @@ function astar_path = AStar(map, start, goal)
     % find path
     open = PriorityQueue;
     open.push(start, 0);
-    closed = [];
+    closed = dictionary;        % use `containers.Map` for MATLAB version lower than R2020b
     while open.size > 0
         current = open.pop;
-        closed = [closed; current];
+        closed(current.key) = current;
 
         if current == goal
-            % break loop and record data
-            obj.goal = current;
-            obj.closed = closed;
+            goal = current;     % refresh cost/parent infos
             break
         end
 
         neighbors = map.neighbors(current);
         for k = 1:length(neighbors)
-            idx = 0;
-            for n = 1:length(closed)
-                if neighbors(k) == closed(n)
-                    idx = n;
-                    break;
-                end
-            end
+            key = neighbors(k).key;
             priority = neighbors(k).cost + heuristic(current);
-            if idx > 0
-                if neighbors(k).cost < closed(idx).cost
-                    closed(idx) = [];
+            if isKey(closed, key)
+                if neighbors(k).cost < closed(key).cost
+                    closed(key) = [];
                     open.push(neighbors(k), priority)
                 end
             else
@@ -44,11 +36,11 @@ function astar_path = AStar(map, start, goal)
     end
 
     % generate path: [row, col, cost]
-    node = obj.goal;
-    astar_path = [node.row, node.col, node.cost];
-    while ~isempty(node.parent)
+    node = goal;
+    astar_path = zeros(goal.depth, 3);
+    for k = 1:goal.depth
+        astar_path(k, :) = [node.row, node.col, node.cost];
         node = node.parent;
-        astar_path = [astar_path; node.row, node.col, node.cost];
     end
     astar_path = astar_path(end:-1:1, :);
 end
