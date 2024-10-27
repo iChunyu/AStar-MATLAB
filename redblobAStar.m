@@ -24,7 +24,7 @@ function astar_path = redblobAStar(map, start, goal)
             if isempty(came_from{neighbors(k).row, neighbors(k).col}) ...
                     || neighbors(k).cost < came_from{neighbors(k).row, neighbors(k).col}{2}
                 came_from{neighbors(k).row, neighbors(k).col} = {[current.row, current.col], neighbors(k).cost};
-                priority = neighbors(k).cost + heuristic(current);
+                priority = neighbors(k).cost + heuristic(neighbors(k));
                 frontier.push(neighbors(k), priority);
             end
         end

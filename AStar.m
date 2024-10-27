@@ -23,7 +23,7 @@ function astar_path = AStar(map, start, goal)
         neighbors = map.neighbors(current);
         for k = 1:length(neighbors)
             key = neighbors(k).key;
-            priority = neighbors(k).cost + heuristic(current);
+            priority = neighbors(k).cost + heuristic(neighbors(k));
             if isKey(closed, key)
                 if neighbors(k).cost < closed(key).cost
                     closed(key) = [];
