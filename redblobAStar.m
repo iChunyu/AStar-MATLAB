@@ -10,7 +10,7 @@ function astar_path = redblobAStar(map, start, goal)
     came_from{start.row, start.col} = {[], 0};
 
     frontier.push(start, 0);
-    heuristic = @(node) abs(goal.row - node.row) + abs(goal.col - node.col);
+    heuristic = @(node) sqrt((goal.row - node.row)^2 + (goal.col - node.col)^2);
 
     while frontier.size > 0
         current = frontier.pop();

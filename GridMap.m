@@ -34,7 +34,7 @@ classdef GridMap < handle
             row = node.row - 1;
             col = node.col;
             if row >= 1 && obj.data(row, col) < obj.obstacle
-                cost = node.cost + obj.data(row, col) + 1;      % +1 for movement cost
+                cost = node.cost + obj.data(row, col);
                 neighbor_nodes = [neighbor_nodes; Node(row, col, cost, node)];
             end
 
@@ -42,7 +42,7 @@ classdef GridMap < handle
             row = node.row;
             col = node.col-1;
             if col >= 1 && obj.data(row, col) < obj.obstacle
-                cost = node.cost + obj.data(row, col) + 1;      % +1 for movement cost
+                cost = node.cost + obj.data(row, col);
                 neighbor_nodes = [neighbor_nodes; Node(row, col, cost, node)];
             end
 
@@ -50,7 +50,7 @@ classdef GridMap < handle
             row = node.row + 1;
             col = node.col;
             if row <= Ny && obj.data(row, col) < obj.obstacle
-                cost = node.cost + obj.data(row, col) + 1;      % +1 for movement cost
+                cost = node.cost + obj.data(row, col);
                 neighbor_nodes = [neighbor_nodes; Node(row, col, cost, node)];
             end
 
@@ -58,20 +58,19 @@ classdef GridMap < handle
             row = node.row;
             col = node.col + 1;
             if col <= Nx && obj.data(row, col) < obj.obstacle
-                cost = node.cost + obj.data(row, col) + 1;      % +1 for movement cost
+                cost = node.cost + obj.data(row, col);
                 neighbor_nodes = [neighbor_nodes; Node(row, col, cost, node)];
             end
         end
 
         % show map
-        function show(obj, varargin)
+        function varargout = show(obj, varargin)
             p = inputParser;
             p.addParameter('GridWidth', 0.5);
             p.addParameter('GridAlpha', 0.3);
             p.addParameter('CostAlpha', 0.7);
             p.addParameter('CostColor', [0.9804, 0.4980, 0.4353]);
-            p.addParameter('ObstacleAlpha', 1);
-            p.addParameter('ObstacleColor', [0.5098, 0.6902, 0.8235])
+            p.addParameter('ObstacleColor', [0.7020, 0.7020, 0.7020])
             p.addParameter('ShowPath', []);
             p.addParameter('PathWidth', 5);
             p.addParameter('PathColor', [0.5569, 0.8118, 0.7882]);
@@ -82,25 +81,27 @@ classdef GridMap < handle
             idx = obj.data < obj.obstacle;
             cmax = max(obj.data(idx));
             if cmax == 0
-                max_alpha = 1;
+                max_alpha = p.Results.CostAlpha;
             else
-                max_alpha = 1 / cmax;
+                max_alpha = p.Results.CostAlpha / cmax;
             end
             [Ny, Nx] = size(obj.data);
             xbase = [-0.5, 0.5, 0.5, -0.5];
             ybase = [-0.5, -0.5, 0.5, 0.5];
+            go = gobjects(Ny, Nx);          % graphics objects
 
-            figure
+            if ~isempty(get(gcf, 'Children'))
+                figure
+            end
             patch([0.5, 0.5, Nx+0.5, Nx+0.5], [0.5, Ny+0.5, Ny+0.5, 0.5], [1, 1, 1], ...
                 'LineWidth', p.Results.GridWidth, 'FaceAlpha', p.Results.GridAlpha);
             hold on
             for x = 1:Nx
                 for y = 1:Ny
                     if obj.data(y, x) >= obj.obstacle
-                        patch(x+xbase, y+ybase, p.Results.ObstacleColor, 'FaceAlpha', p.Results.ObstacleAlpha, ...
-                            'EdgeAlpha', p.Results.GridAlpha, 'LineWidth', p.Results.GridWidth);
+                        go(y, x) = patch(x+xbase, y+ybase, p.Results.ObstacleColor, 'LineWidth', p.Results.GridWidth);
                     else
-                        patch(x+xbase, y+ybase, p.Results.CostColor, 'FaceAlpha', obj.data(y, x) * max_alpha, ...
+                        go(y, x) = patch(x+xbase, y+ybase, p.Results.CostColor, 'FaceAlpha', obj.data(y, x) * max_alpha, ...
                             'EdgeAlpha', p.Results.GridAlpha, 'LineWidth', p.Results.GridWidth);
                         if p.Results.ShowValue
                             text(x, y, num2str(obj.data(y, x)), 'FontSize', p.Results.FontSize, ...
@@ -114,6 +115,10 @@ classdef GridMap < handle
             if ~isempty(p.Results.ShowPath)
                 plot(p.Results.ShowPath(:,2), p.Results.ShowPath(:,1), ...
                     'Color', p.Results.PathColor, 'LineWidth', p.Results.PathWidth);
+            end
+
+            if nargout > 0
+                varargout{1} = go;
             end
         end
     end

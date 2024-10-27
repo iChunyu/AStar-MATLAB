@@ -2,7 +2,7 @@
 
 Try the A* path-finding algorithm in MATLAB with the 2D map.
 
-![](demo.png)
+![](demo.gif)
 
 :warning: **This is an in-progress study project. Codes here may give a reasonable result, but I haven't fully checked.**
 
@@ -15,18 +15,18 @@ clear;clc
 close all
 
 % Generate a map with random costs
-map_data = randi([0 100], 10, 10);
-map_data(map_data < 70) = 0;
-map = GridMap(map_data);
+mapdata = zeros(10, 15)+0.5;
+mapdata(3, 5:13) = 100;
+mapdata(3:9, 13) = 100;
+map = GridMap(mapdata, 90);
 
 % Set start and goal position (matrix index)
-start = Node(1, 1);
-goal = Node(10, 10);
+start = Node(10, 1);
+goal = Node(2, 10);
 
 % Call AStar to find the costless path
-astar_path = AStar(map, start, goal);
-map.show('ShowPath', astar_path)
-fprintf('AStar total cost: %d\n', astar_path(end, 3));
+astar_path = AStar(map, start, goal, 'showprocess', true, 'framerate', 0.1, 'costcolor', [1 1 1], 'costalpha', 0.7);
+fprintf('AStar total cost: %.2f\n', astar_path(end, 3));
 ```
 
 
