@@ -12,10 +12,10 @@ map = GridMap(map_data);
 start = Node(1, 1);
 goal = Node(5, 5);
 
-[path, cost] = SimpleAStar(map, start, goal);
-map.show('ShowPath', path, 'ShowValue', true)
-fprintf('SimpAStar total cost: %d\n', cost)
+redblob_path = redblobAStar(map, start, goal);
+map.show('ShowPath', redblob_path, 'ShowValue', true)
+fprintf('SimpAStar total cost: %d\n', redblob_path(end, 3))
 
-astar_solver = AStar(map, start, goal);
-map.show('ShowPath', astar_solver.path, 'ShowValue', true)
-fprintf('AStar total cost: %d\n', astar_solver.goal.cost)
+astar_path = AStar(map, start, goal);
+map.show('ShowPath', astar_path, 'ShowValue', true)
+fprintf('AStar total cost: %d\n', astar_path(end,3))

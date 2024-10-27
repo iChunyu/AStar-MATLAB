@@ -4,7 +4,7 @@
 % XiaoCY, 2024-10-24
 
 %%
-function varargout = SimpleAStar(map, start, goal)
+function astar_path = redblobAStar(map, start, goal)
     frontier = PriorityQueue;
     came_from = cell(size(map.data));       % {[row, col], cost_so_far} in each cell
     came_from{start.row, start.col} = {[], 0};
@@ -29,14 +29,13 @@ function varargout = SimpleAStar(map, start, goal)
             end
         end
     end
-
-    path = [goal.row, goal.col];
+    
+    % generate path: [row, col, cost]
+    astar_path = [goal.row, goal.col, came_from{goal.row, goal.col}{2}];
     index = came_from{goal.row, goal.col}{1};
     while ~isempty(index)
-        path = vertcat(path, index);
+        astar_path = vertcat(astar_path, [index, came_from{index(1), index(2)}{2}]);
         index = came_from{index(1), index(2)}{1};
     end
-
-    varargout{1} = path;
-    varargout{2} = came_from{goal.row, goal.col}{2};
+    astar_path = astar_path(end:-1:1, :);
 end

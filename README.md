@@ -8,7 +8,7 @@ Try the A* path-finding algorithm in MATLAB with the 2D map.
 
 ## Introduction
 
-The `demo.m` shows a simple example of A* algorithm. You just create a `GridMap` with matrix of costs. Given the start and goal `Node` (matrix index), the `AStar` or `SimpleAStar` should be capable to find the costless path and show the result.
+The `demo.m` shows a simple example of A* algorithm. You just create a `GridMap` with matrix of costs. Given the start and goal `Node` (matrix index), the `AStar` or `redblobAStar` should be capable to find the costless path and show the result.
 
 ```MATLAB
 clear;clc
@@ -24,9 +24,9 @@ start = Node(1, 1);
 goal = Node(10, 10);
 
 % Call AStar to find the costless path
-astar_solver = AStar(map, start, goal);
-map.show('ShowPath', astar_solver.path)
-fprintf('AStar total cost: %d\n', astar_solver.goal.cost)
+astar_path = AStar(map, start, goal);
+map.show('ShowPath', astar_path)
+fprintf('AStar total cost: %d\n', astar_path(end, 3));
 ```
 
 

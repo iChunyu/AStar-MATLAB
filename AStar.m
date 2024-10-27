@@ -3,68 +3,52 @@
 % XiaoCY, 2024-10-26
 
 %%
-classdef AStar < handle
-    properties
-        map
-        start
-        goal
-        closed
-        path
-    end
+function astar_path = AStar(map, start, goal)
+    % heuristic function handle
+    heuristic = @(node) abs(goal.row - node.row) + abs(goal.col - node.col);
 
-    methods
-        function obj = AStar(map, start, goal)
-            % record data
-            obj.map = map;
-            obj.start = start;
+    % find path
+    open = PriorityQueue;
+    open.push(start, 0);
+    closed = [];
+    while open.size > 0
+        current = open.pop;
+        closed = [closed; current];
 
-            % heuristic function handle
-            heuristic = @(node) abs(goal.row - node.row) + abs(goal.col - node.col);
+        if current == goal
+            % break loop and record data
+            obj.goal = current;
+            obj.closed = closed;
+            break
+        end
 
-            % find path
-            open = PriorityQueue;
-            open.push(start, 0);
-            closed = [];
-            while open.size > 0
-                current = open.pop;
-                closed = [closed; current];
-
-                if current == goal
-                    % break loop and record data
-                    obj.goal = current;
-                    obj.closed = closed;
-                    break
-                end
-
-                neighbors = map.neighbors(current);
-                for k = 1:length(neighbors)
-                    idx = 0;
-                    for n = 1:length(closed)
-                        if neighbors(k) == closed(n)
-                            idx = n;
-                            break;
-                        end
-                    end
-                    priority = neighbors(k).cost + heuristic(current);
-                    if idx > 0
-                        if neighbors(k).cost < closed(idx).cost
-                            closed(idx) = [];
-                            open.push(neighbors(k), priority)
-                        end
-                    else
-                        open.push(neighbors(k), priority)
-                    end
+        neighbors = map.neighbors(current);
+        for k = 1:length(neighbors)
+            idx = 0;
+            for n = 1:length(closed)
+                if neighbors(k) == closed(n)
+                    idx = n;
+                    break;
                 end
             end
-
-            % generate path
-            node = obj.goal;
-            path = [node.row, node.col];
-            while ~isempty(node.parent)
-                node = node.parent;
-                path = [path; node.row, node.col];
+            priority = neighbors(k).cost + heuristic(current);
+            if idx > 0
+                if neighbors(k).cost < closed(idx).cost
+                    closed(idx) = [];
+                    open.push(neighbors(k), priority)
+                end
+            else
+                open.push(neighbors(k), priority)
             end
-            obj.path = path;
         end
     end
+
+    % generate path: [row, col, cost]
+    node = obj.goal;
+    astar_path = [node.row, node.col, node.cost];
+    while ~isempty(node.parent)
+        node = node.parent;
+        astar_path = [astar_path; node.row, node.col, node.cost];
+    end
+    astar_path = astar_path(end:-1:1, :);
 end
